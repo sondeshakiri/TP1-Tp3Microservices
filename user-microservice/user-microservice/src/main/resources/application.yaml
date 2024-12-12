@@ -1,0 +1,73 @@
+spring:
+  application:
+    name: user-microservice # Nom de l'application pour identification dans Eureka
+
+  cloud:
+    config:
+      uri: http://localhost:8888 # Adresse de votre Config Server
+      import: "optional:config-server:" # Utilisation correcte de configserver avec optional pour éviter l'erreur
+    import-check:
+      enabled: false # Désactiver la vérification de l'importation de configuration
+
+  eureka:
+    client:
+      service-url:
+        defaultZone: http://localhost:8761 # Adresse de votre Eureka Server
+
+  # Configuration de la base de données
+  datasource:
+    url: jdbc:mysql://localhost:3306/ecommerce
+    username: root
+    password: 
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # Configuration JPAa
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0 # Taux d'échantillonnage pour la traçabilité (1.0 signifie que toutes les requêtes seront tracées)
+  zipkin:
+    endpoint: http://localhost:9411/api/v2/spans # URL du serveur Zipkin pour collecter et visualiser les traces
+
+  # Gestion des logs et des points de gestion
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    info:
+      enabled: true
+  metrics:
+    export:
+          prometheus:
+            enabled: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+
+server:
+  port: 8081
+
+resilience4j:
+  retry:
+    instances:
+      myRetry:
+        max-attempts: 3 # Nombre maximum de tentatives
+        wait-duration: 500ms # Durée entre chaque tentative
+  rate-limiter:
+    instances:
+      myRateLimiter:
+        limit-for-period: 5 # Nombre de requêtes par période
+        limit-refresh-period: 1s # Période de rafraîchissement (1 seconde)
+  timeout-duration: 500ms # Durée de timeout pour une requête
+

@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: eureka-server  # Name of the application
+  eureka:
+    client:
+      service-url:
+        defaultZone: http://localhost:8761  # The URL where Eureka Server is running
+      register-with-eureka: false  # Register this application with Eureka Server
+      fetch-registry: false  # Fetch the registry to discover other services

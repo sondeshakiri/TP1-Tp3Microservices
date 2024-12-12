@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: user-microservice # Nom de l'application pour identification dans Eureka
+
+  cloud:
+    config:
+      uri: http://localhost:8888 # Adresse de votre Config Server
+      import: "optional:config-server:" # Utilisation correcte de configserver avec optional pour éviter l'erreur
+    import-check:
+      enabled: false # Désactiver la vérification de l'importation de configuration
+
+  eureka:
+    client:
+      service-url:
+        defaultZone: http://localhost:8761/eureka # Adresse complète du serveur Eureka
+    instance:
+      prefer-ip-address: true # Utilisation de l'adresse IP pour l'enregistrement
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/Produit2 # URL de la base de données
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver # Classe de driver pour MySQL
+
+  jpa:
+    hibernate:
+      ddl-auto: update # Permet à Hibernate de mettre à jour le schéma
+    show-sql: true # Affiche les requêtes SQL dans les logs
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect # Dialecte adapté pour MariaDB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    export:
+      prometheus:
+        enabled: true # Active l'exportation des métriques pour Prometheus
+  endpoint:
+    info:
+      enabled: true # Active l'endpoint /actuator/info
+
+logging:
+  level:
+    root: INFO # Niveau de journalisation global
+    org.springframework.web: DEBUG # Niveau DEBUG pour les logs liés au web
+
+server:
+  port: 8082 # Port du serveur
+
+resilience4j:
+  retry:
+    instances:
+      myRetry:
+        max-attempts: 3 # Nombre maximum de tentatives
+        wait-duration: 500ms # Temps d'attente entre les tentatives
+  rate-limiter:
+    instances:
+      myRateLimiter:
+        limit-for-period: 5 # Nombre de requêtes autorisées par période
+        limit-refresh-period: 1s # Durée de rafraîchissement des limites
+        timeout-duration: 500ms # Timeout pour les requêtes
+
+#

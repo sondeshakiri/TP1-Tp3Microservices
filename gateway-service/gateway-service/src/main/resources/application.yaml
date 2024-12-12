@@ -1,0 +1,27 @@
+server:
+  port: 8080  # Port sur lequel l'API Gateway va être accessible
+
+spring:
+  application:
+    name: gateway-service  # Nom de l'application API Gateway
+  cloud:
+    gateway:
+      routes:
+        # Route vers le service product-microservice
+        - id: product-service
+          uri: lb://product-microservice  # Load-balancer vers le microservice "product"
+          predicates:
+            - Path=/products/**  # Match pour les chemins qui commencent par /products/
+
+        # Route vers le service user-microservice
+        - id: user-service
+          uri: lb://user-microservice  # Load-balancer vers le microservice "user"
+          predicates:
+            - Path=/users/**  # Match pour les chemins qui commencent par /users/
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka  # URL du Eureka Server pour la découverte des services
+    register-with-eureka: true  # Enregistrement de l'API Gateway dans Eureka
+    fetch-registry: true  # Récupération des services enregistrés dans Eureka
