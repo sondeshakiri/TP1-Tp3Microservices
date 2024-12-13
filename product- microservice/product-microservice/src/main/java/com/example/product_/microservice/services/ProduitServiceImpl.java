@@ -20,11 +20,18 @@ public class ProduitServiceImpl implements ProduitService {
     public Produit creerProduit(Produit produit) {
         return produitRepository.save(produit);
     }
+  // Exemple d'un champ servant à vérifier la condition
+    private boolean someConditionCausingAnError = true;
 
-    @Override
+
     public List<Produit> obtenirTousProduits() {
+        // Exemple : simuler une exception en cas de problème de réseau ou autre
+        if (someConditionCausingAnError) {
+            throw new RuntimeException("Erreur lors de la récupération des produits");
+        }
         return produitRepository.findAll();
     }
+
 
     @Override
     public Produit obtenirProduitParId(Long id) {
